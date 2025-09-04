@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prokeep Excercise</title>
+</head>
+<body>
+    <div>
+        <form id="urlForm">
+            <div>
+                <label>Enter Long URL</label>
+                <input type="text" name="longUrl" id="longUrl" required/>
+            </div>
+            <div>
+                <label>Enter Label</label>
+                <input type="text" name="label" id="label" />
+            </div>
+            <div>
+                <input type="submit">
+            </div>
+        </form>
+    </div>
+    <div id="results">
+        
+    </div>
+</body>
+<script>
+    const endpoint = 'http://localhost:5001'
+    const form = document.getElementById('urlForm')
+    const result = document.getElementById('results')
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault()
+        const form = e.target;
+        const data = Object.fromEntries(new FormData(form).entries())
+
+        const res = await fetch(`${endpoint}/shorten`, {
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        })
+
+        const json = await res.json()
+        
+        if (json.short_url){
+            result.innerHTML = `
+                Short link: <a href="${json.short_url}" id="shortlink" target="_blank">
+                  ${json.short_url}
+                </a>
+              `;
+        }
+        document.getElementById("shortlink").addEventListener('click', async (e) => {
+            e.preventDefault()
+            const shortUrl = e.target.href
+            
+            let payload = shortUrl.split('/').pop()
+            try {
+                let res = await fetch(`${endpoint}/${payload}`, { method: 'GET', headers: { "Content-Type": "application/json"} })
+                const { location } = await res.json()
+                window.location.href = location
+            } catch (err){
+                console.log(err)
+            }
+        })
+    })
+</script>
+</html>
