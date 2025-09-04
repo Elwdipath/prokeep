@@ -1,12 +1,15 @@
-### Start app 
+### Start app
 
-cd into server directory from project root
+## Install Dependencies
+`npm i`
+
+## cd into server directory from project root
 `cd server`
 
-Run NPM Script
+## Run NPM Script
 `npm run server`
 
-Open Web Interface options
+## Open Web Interface options
     - Control click link in terminal
     - Open browser and type localhost:5001 in the address bar
 
